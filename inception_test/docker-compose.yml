@@ -7,9 +7,9 @@ services:
       dockerfile: mariadb.dockerfile
     restart: always
     environment:
-      - MARIADB_USER=mypark
-      - MARIADB_PASSWORD=1234
-      - MARIADB_ROOT_PASSWORD=1234
+      MARIADB_USER: mypark
+      MARIADB_PASSWORD: 1234
+      MARIADB_ROOT_PASSWORD: 1234
     ports:
       - 3306:3306
     volumes:
@@ -35,10 +35,10 @@ services:
     volumes:
       - ./wordpress:/var/www/html
     environment:
-      - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_USER=mypark
-      - WORDPRESS_DB_PASSWORD=1234
-      - WORDPRESS_DB_NAME=test
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_USER: mypark
+      WORDPRESS_DB_PASSWORD: 1234
+      WORDPRESS_DB_NAME: wordpress
 
 networks:
   my_net:
