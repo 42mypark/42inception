@@ -1,0 +1,45 @@
+version: "3.0"
+
+services:
+  mariadb:
+    build:
+      context: .
+      dockerfile: mariadb.dockerfile
+    restart: always
+    environment:
+      - MARIADB_USER=mypark
+      - MARIADB_PASSWORD=1234
+      - MARIADB_ROOT_PASSWORD=1234
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mariadb/data:/data
+    networks:
+      - my_net
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    ports:
+      - 80:443
+    networks:
+      - my_net
+  php-fpm:
+    build:
+      context: .
+      dockerfile: php-fpm.dockerfile
+    ports:
+      - 9000:9000
+    networks:
+      - my_net
+    volumes:
+      - ./wordpress:/var/www/html
+    environment:
+      - WORDPRESS_DB_HOST=mariadb:3306
+      - WORDPRESS_DB_USER=mypark
+      - WORDPRESS_DB_PASSWORD=1234
+      - WORDPRESS_DB_NAME=test
+
+networks:
+  my_net:
+    driver: bridge
