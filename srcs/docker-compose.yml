@@ -1,0 +1,50 @@
+version: "3.3"
+
+services:
+  mariadb:
+    container_name: inception_mariadb
+    build:
+      context: ./mariadb
+      dockerfile: mariadb.dockerfile
+    restart: always
+    env_file:
+      - mariadb/.mariadb.env
+    volumes:
+      - ./mariadb/data:/data
+    networks:
+      - net
+
+  nginx:
+    container_name: inception_nginx
+    depends_on:
+      - php-fpm
+      - mariadb
+    build:
+      context: ./nginx
+      dockerfile: nginx.dockerfile
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./wordpress:/var/www/html
+    networks:
+      - net
+
+  php-fpm:
+    container_name: inception_php-fpm
+    depends_on:
+      - mariadb
+    build:
+      context: ./php-fpm
+      dockerfile: php-fpm.dockerfile
+    restart: always
+    env_file:
+      - php-fpm/.php-fpm.env
+    volumes:
+      - ./wordpress:/var/www/html
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
