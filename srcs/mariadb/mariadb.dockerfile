@@ -7,6 +7,5 @@ RUN mkdir -p /run/mysqld &&\
 COPY ./mariadb-server.cnf /etc/my.cnf.d/
 COPY ./run.sh /run.sh
 EXPOSE 3306
-EXPOSE 99
 ENTRYPOINT [ "/run.sh" ]
 

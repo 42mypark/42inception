@@ -1,6 +1,7 @@
 DOCKER_COMPOSE				= docker-compose
 DOCKER_COMPOSE_FILE		= srcs/docker-compose.yml
 DOCKER_COMPOSE_FLAGS	= -f $(DOCKER_COMPOSE_FILE) -p inception
+SRCS_DIR = ./srcs
 VPATH = ./srcs
 
 
@@ -19,23 +20,21 @@ help:
 	@echo "down		Clean all data"
 	@echo "config		docker-compose config"
 
-
-
-up: ## Start all or c=<name> containers in foreground
+up: dependencies ## Start all or c=<name> containers in foreground
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) up $(c)
 
-build: ## Start all or c=<name> containers in foreground
+build: dependencies ## Start all or c=<name> containers in foreground
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) build $(c)
 
 build-up: build up
 
-start: ## Start all or c=<name> containers in background
+start: dependencies ## Start all or c=<name> containers in background
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) up -d $(c)
 
 stop: ## Stop all or c=<name> containers
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) stop $(c)
 
-restart: ## Restart all or c=<name> containers
+restart: dependencies ## Restart all or c=<name> containers
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) stop $(c)
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) up $(c) -d
 
@@ -56,3 +55,18 @@ config: ## Show docker-compose config
 clean: down
 	rm -rf	srcs/mariadb/data/*
 	rm -f		srcs/wordpress/wp-config.php
+
+fclean: clean
+	rm -f wordpress.tar.gz
+	rm -rf $(SRCS_DIR)/wordpress
+
+dependencies: $(SRCS_DIR)/wordpress
+	@echo "Checking dependencies is done"
+
+$(SRCS_DIR)/wordpress: wordpress.tar.gz
+	@echo "Extracting wordpress..."
+	@tar -xf $< -C $(SRCS_DIR)
+ 
+wordpress.tar.gz:
+	@echo "Downloading wordpress..."
+	@curl -o $@  https://wordpress.org/latest.tar.gz
