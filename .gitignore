@@ -1,2 +1,3 @@
-./srcs/mariadb/data/
-./srcs/wordpress
+srcs/mariadb/data/
+srcs/wordpress
+wordpress.tar.gz
