@@ -6,19 +6,12 @@ if [ -f $CONFIG ]; then
 	rm $CONFIG
 fi;
 
-# nc -l localhost 3000 |
-
-# while read -r cmd; do
-# 	echo $cmd;
-#   case $cmd in
-#     done) break;;
-#     *) ;;
-#   esac
-# done
-
-# kill "$COPROC_PID"
-
-sleep 5 &&\
+$( nc -zv ${WORDPRESS_DB_HOST} 3306 );
+until [ $? -eq 0 ]
+do
+	sleep 1;
+	$( nc -zv ${WORDPRESS_DB_HOST} 3306 );
+done;
 
 wp core config --path=/var/www/html \
         --dbhost=${WORDPRESS_DB_HOST} \

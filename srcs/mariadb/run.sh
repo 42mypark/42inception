@@ -19,9 +19,4 @@ EOF
 # unset $MARIADB_ADMIN_PASSWORD
 # unset $MARIADB_ROOT_PASSWORD
 # unset $MARIADB_TARGET_HOST
-
-nc $MARIADB_TARGET_HOST 99 << EOF
-done
-EOF
-
 exec /usr/bin/mysqld
