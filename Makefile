@@ -1,8 +1,8 @@
 DOCKER_COMPOSE				= docker-compose
 DOCKER_COMPOSE_FILE		= srcs/docker-compose.yml
 DOCKER_COMPOSE_FLAGS	= -f $(DOCKER_COMPOSE_FILE) -p inception
-SRCS_DIR = ./srcs
-VPATH = ./srcs
+SRCS_DIR = srcs
+VPATH = srcs
 
 
 .PHONY: help dependencies up start stop restart status ps clean build build-up
@@ -57,11 +57,15 @@ clean: down
 	rm -f		srcs/wordpress/wp-config.php
 
 fclean: clean
+	rm -f ~/data
 	rm -f wordpress.tar.gz
 	rm -rf $(SRCS_DIR)/wordpress
 
-dependencies: $(SRCS_DIR)/wordpress
+dependencies: $(SRCS_DIR)/wordpress ~/data
 	@echo "Checking dependencies is done"
+
+~/data:
+	ln -s $(abspath $(SRCS_DIR))/mariadb/data/ ~/data
 
 $(SRCS_DIR)/wordpress: wordpress.tar.gz
 	@echo "Extracting wordpress..."

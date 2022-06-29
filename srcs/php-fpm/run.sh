@@ -27,14 +27,4 @@ wp core install --path=/var/www/html \
 		--admin_password=${WORDPRESS_ADMIN_PASS} \
 		--admin_email=${WORDPRESS_ADMIN_EMAIL};
 
-unset WORDPRESS_DB_NAME;
-unset WORDPRESS_DB_USER;
-unset WORDPRESS_DB_PASS;
-unset WORDPRESS_DB_HOST;
-unset WORDPRESS_WEBSITE_TITLE;
-unset WORDPRESS_WEBSITE_URL_NOHTTP;
-unset WORDPRESS_ADMIN_EMAIL;
-unset WORDPRESS_ADMIN_PASS;
-unset WORDPRESS_ADMIN_USER;
-
 exec /usr/sbin/php-fpm8 -F -R -O
