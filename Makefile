@@ -62,7 +62,9 @@ fclean: clean
 	rm -rf $(SRCS_DIR)/wordpress
 
 dependencies: $(SRCS_DIR)/wordpress ~/data
+ifeq ($(shell uname -s), Linux)
 	@sh set_server_ip.sh
+endif
 	@echo "Checking dependencies is done"
 	
 
