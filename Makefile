@@ -62,7 +62,9 @@ fclean: clean
 	rm -rf $(SRCS_DIR)/wordpress
 
 dependencies: $(SRCS_DIR)/wordpress ~/data
+	@sh set_server_ip.sh
 	@echo "Checking dependencies is done"
+	
 
 ~/data:
 	ln -s $(abspath $(SRCS_DIR))/mariadb/data/ ~/data
