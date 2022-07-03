@@ -7,10 +7,10 @@ VPATH = srcs
 
 .PHONY: help dependencies up start stop restart status ps clean build build-up
 
-help: 
+help:
 	@echo usage: make [target]
-	@echo "start		Start all containers in background" 
-	@echo "build		Build all containers" 
+	@echo "start		Start all containers in background"
+	@echo "build		Build all containers"
 	@echo "up   		Start all containers in background"
 	@echo "build-up 	Start all containers with build"
 	@echo "stop		Stop all containers"
@@ -20,7 +20,7 @@ help:
 	@echo "down		Clean all data"
 	@echo "config		docker-compose config"
 
-up: dependencies ## Start all or c=<name> containers in foreground
+up: ## Start all or c=<name> containers in foreground
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) up $(c)
 
 build: dependencies ## Start all or c=<name> containers in foreground
@@ -28,13 +28,13 @@ build: dependencies ## Start all or c=<name> containers in foreground
 
 build-up: build up
 
-start: dependencies ## Start all or c=<name> containers in background
+start: ## Start all or c=<name> containers in background
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) up -d $(c)
 
 stop: ## Stop all or c=<name> containers
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) stop $(c)
 
-restart: dependencies ## Restart all or c=<name> containers
+restart: ## Restart all or c=<name> containers
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) stop $(c)
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) up $(c) -d
 
@@ -53,6 +53,7 @@ config: ## Show docker-compose config
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) config
 
 clean: down
+	@sh reset_server_ip.sh
 	rm -rf	srcs/mariadb/data/*
 	rm -f		srcs/wordpress/wp-config.php
 
@@ -66,7 +67,7 @@ ifeq ($(shell uname -s), Linux)
 	@sh set_server_ip.sh
 endif
 	@echo "Checking dependencies is done"
-	
+
 
 ~/data:
 	ln -s $(abspath $(SRCS_DIR))/mariadb/data/ ~/data
@@ -74,7 +75,7 @@ endif
 $(SRCS_DIR)/wordpress: wordpress.tar.gz
 	@echo "Extracting wordpress..."
 	@tar -xf $< -C $(SRCS_DIR)
- 
+
 wordpress.tar.gz:
 	@echo "Downloading wordpress..."
 	@curl -o $@  https://wordpress.org/latest.tar.gz
