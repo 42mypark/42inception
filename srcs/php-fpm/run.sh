@@ -27,6 +27,13 @@ wp core install --path=/var/www/html \
 		--admin_password=${WORDPRESS_ADMIN_PASS} \
 		--admin_email=${WORDPRESS_ADMIN_EMAIL};
 
-wp plugin install --path=/var/www/html --activate pexlechris-adminer
+wp plugin --path=/var/www/html install pexlechris-adminer
+wp plugin --path=/var/www/html activate pexlechris-adminer
+wp plugin --path=/var/www/html install wp-redis;
+wp plugin --path=/var/www/html activate wp-redis;
+
+echo "define('WP_REDIS_HOST', '${WORDPRESS_REDIS_HOST}' );" >> /var/www/html/wp-config.php
+echo "define('WP_REDIS_PORT', '${WORDPRESS_REDIS_PORT}' );" >> /var/www/html/wp-config.php
+echo "define('WP_CACHE_KEY_SALT', '${WORDPRESS_REDIS_KEY_SALT}' );" >> /var/www/html/wp-config.php
 
 exec /usr/sbin/php-fpm8 -F -R -O

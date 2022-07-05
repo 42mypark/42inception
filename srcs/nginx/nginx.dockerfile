@@ -4,5 +4,4 @@ COPY ./default.conf /etc/nginx/http.d/
 COPY ./nginx.conf /etc/nginx/
 COPY ./script/ /script/
 EXPOSE 443/tcp
-# ENTRYPOINT [ "/usr/sbin/nginx" , "-g", "daemon off;" ]
 ENTRYPOINT ["/script/run.sh"]

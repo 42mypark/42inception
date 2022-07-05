@@ -27,12 +27,14 @@ services:
       - 443:443
     volumes:
       - ./wordpress:/var/www/html
+      - ./tetris:/var/www/html/tetris
     networks:
       - net
 
   php-fpm:
     container_name: inception_php-fpm
     depends_on:
+      - redis
       - mariadb
     build:
       context: ./php-fpm
@@ -42,6 +44,41 @@ services:
       - php-fpm/.php-fpm.env
     volumes:
       - ./wordpress:/var/www/html
+    networks:
+      - net
+
+  redis:
+    container_name: inception_redis
+    depends_on:
+      - mariadb
+    build:
+      context: ./redis
+      dockerfile: redis.dockerfile
+    restart: always
+    networks:
+      - net
+  mkdocs:
+    container_name: inception_mkdocs
+    depends_on:
+      - nginx
+    build:
+      context: ./mkdocs
+      dockerfile: mkdocs.dockerfile
+    restart: always
+    networks:
+      - net
+  ftp:
+    container_name: inception_ftp
+    depends_on:
+      - php-fpm
+    build:
+      context: ./ftp
+      dockerfile: ftp.dockerfile
+    restart: always
+    env_file:
+      - ftp/.ftp.env
+    volumes:
+      - ./wordpress:/wordpress
     networks:
       - net
 
