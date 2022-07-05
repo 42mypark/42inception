@@ -27,4 +27,6 @@ wp core install --path=/var/www/html \
 		--admin_password=${WORDPRESS_ADMIN_PASS} \
 		--admin_email=${WORDPRESS_ADMIN_EMAIL};
 
+wp plugin install --path=/var/www/html --activate pexlechris-adminer
+
 exec /usr/sbin/php-fpm8 -F -R -O
