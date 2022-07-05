@@ -4,5 +4,6 @@ RUN apk add python3 python3-dev py3-pip &&\
 	pip install mkdocs==${MKDOCS_VERSION} &&\
 	mkdocs new resume &&\
 	cd resume
+WORKDIR /resume
 EXPOSE 8000
-ENTRYPOINT [ "/bin/sh" ]
+ENTRYPOINT [ "/usr/bin/mkdocs", "serve", "-a", "0.0.0.0:8000" ]
