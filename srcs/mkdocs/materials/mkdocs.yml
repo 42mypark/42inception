@@ -1,0 +1,6 @@
+site_name: My Resume
+theme: readthedocs
+nav:
+  - Resume: resume.md
+  - History: history.md
+  - About: about.md

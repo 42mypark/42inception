@@ -19,6 +19,7 @@ services:
     depends_on:
       - php-fpm
       - mariadb
+      - mkdocs
     build:
       context: ./nginx
       dockerfile: nginx.dockerfile
@@ -57,16 +58,17 @@ services:
     restart: always
     networks:
       - net
+
   mkdocs:
     container_name: inception_mkdocs
-    depends_on:
-      - nginx
     build:
       context: ./mkdocs
       dockerfile: mkdocs.dockerfile
-    restart: always
+    volumes:
+      - ./wordpress/site:/resume/site
     networks:
       - net
+
   ftp:
     container_name: inception_ftp
     depends_on:

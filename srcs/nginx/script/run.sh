@@ -1,3 +1,3 @@
 #!/bin/sh
-sh /script/ssl.sh "10.11.250.154";
+sh /script/ssl.sh "localhost";
 exec /usr/sbin/nginx -g "daemon off;";

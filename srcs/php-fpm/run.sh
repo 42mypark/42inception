@@ -27,8 +27,6 @@ wp core install --path=/var/www/html \
 		--admin_password=${WORDPRESS_ADMIN_PASS} \
 		--admin_email=${WORDPRESS_ADMIN_EMAIL};
 
-wp plugin --path=/var/www/html install pexlechris-adminer
-wp plugin --path=/var/www/html activate pexlechris-adminer
 wp plugin --path=/var/www/html install wp-redis;
 wp plugin --path=/var/www/html activate wp-redis;
 
