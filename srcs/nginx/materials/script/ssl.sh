@@ -14,7 +14,7 @@ DOMAIN=$1
 # Generate Private key 
 openssl genrsa -out ${DOMAIN}.key 2048
 
-# Create csf conf
+# Create csr conf
 cat > csr.conf <<EOF
 [req]
 default_bits = 2048
