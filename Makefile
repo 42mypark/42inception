@@ -66,17 +66,13 @@ endif
 	@echo "Checking dependencies is done"
 
 ~/data:
-	ln -s $(abspath $(SRCS_DIR))/mariadb/data/ ~/data
+	ln -s $(abspath $(SRCS_DIR))/mariadb/data/ /home/mypark/data
 
-$(SRCS_DIR)/wordpress/: wordpress.tar.gz adminer.php
+$(SRCS_DIR)/wordpress/: wordpress.tar.gz
 	@echo "Extracting wordpress..."
 	@tar -xf $< -C $(SRCS_DIR)
-	@mv adminer.php $@/
-
-adminer.php:
 	@echo "Downloading adminer..."
-	@curl -L -o $@ https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-en.php
-
+	@curl -L -o $@/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-en.php
 
 wordpress.tar.gz:
 	@echo "Downloading wordpress..."
