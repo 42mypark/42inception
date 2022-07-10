@@ -1,4 +1,7 @@
 #!/bin/sh
+
+mv /materials/mariadb-server.cnf /etc/my.cnf.d/
+
 mysql_install_db --user=mysql
 chown -R mysql:mysql /data
 

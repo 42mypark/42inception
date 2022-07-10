@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mv /materials/www.conf /etc/php8/php-fpm.d/
+
 CONFIG="/var/www/html/wp-config.php"
 
 if [ -f $CONFIG ]; then

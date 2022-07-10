@@ -4,6 +4,5 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 	chmod +x wp-cli.phar &&\
 	mv wp-cli.phar /usr/local/bin/wp
 EXPOSE 9000/tcp 6379/tcp
-COPY ./www.conf /etc/php8/php-fpm.d/
-COPY ./run.sh /run.sh
-ENTRYPOINT ["/run.sh"]
+COPY ./materials /materials
+ENTRYPOINT ["/materials/run.sh"]
