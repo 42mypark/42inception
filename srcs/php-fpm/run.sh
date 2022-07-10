@@ -32,6 +32,5 @@ wp plugin --path=/var/www/html activate wp-redis;
 
 echo "define('WP_REDIS_HOST', '${WORDPRESS_REDIS_HOST}' );" >> /var/www/html/wp-config.php
 echo "define('WP_REDIS_PORT', '${WORDPRESS_REDIS_PORT}' );" >> /var/www/html/wp-config.php
-echo "define('WP_CACHE_KEY_SALT', '${WORDPRESS_REDIS_KEY_SALT}' );" >> /var/www/html/wp-config.php
 
 exec /usr/sbin/php-fpm8 -F -R -O
