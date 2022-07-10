@@ -6,7 +6,6 @@ RUN apk add --no-cache 'su-exec>=0.2'
 
 ENV REDIS_VERSION 7.0.2
 ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-7.0.2.tar.gz
-ENV REDIS_DOWNLOAD_SHA 5e57eafe7d4ac5ecb6a7d64d6b61db775616dbf903293b3fcc660716dbda5eeb
 
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
@@ -23,7 +22,6 @@ RUN set -eux; \
 	#   wget: bad header line:     XxhODalH: btu; path=/; Max-Age=900
 	wget;\
 	wget -O redis.tar.gz "$REDIS_DOWNLOAD_URL"; \
-	# echo "$REDIS_DOWNLOAD_SHA redis.tar.gz" | sha256sum -c -; \
 	mkdir -p /usr/src/redis; \
 	tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1; \
 	rm redis.tar.gz; \
@@ -35,10 +33,10 @@ RUN set -eux; \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *1 *,.*[)],$' /usr/src/redis/src/config.c; \
 	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' /usr/src/redis/src/config.c; \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' /usr/src/redis/src/config.c;\
-##</protected-mode-sed>##
-# for future reference, we modify this directly in the source instead of just supplying a default configuration flag because apparently "if you specify any argument to redis-server, [it assumes] you are going to specify everything"
-# see also https://github.com/docker-library/redis/issues/4#issuecomment-50780840
-# (more exactly, this makes sure the default behavior of "save on SIGTERM" stays functional by default)
+	##</protected-mode-sed>##
+	# for future reference, we modify this directly in the source instead of just supplying a default configuration flag because apparently "if you specify any argument to redis-server, [it assumes] you are going to specify everything"
+	# see also https://github.com/docker-library/redis/issues/4#issuecomment-50780840
+	# (more exactly, this makes sure the default behavior of "save on SIGTERM" stays functional by default)
 	# https://github.com/jemalloc/jemalloc/issues/467 -- we need to patch the "./configure" for the bundled jemalloc to match how Debian compiles, for compatibility
 	# (also, we do cross-builds, so we need to embed the appropriate "--build=xxx" values to that "./configure" invocation)
 	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
@@ -46,8 +44,8 @@ RUN set -eux; \
 	# https://salsa.debian.org/debian/jemalloc/-/blob/c0a88c37a551be7d12e4863435365c9a6a51525f/debian/rules#L8-23
 	dpkgArch="$(dpkg --print-architecture)"; \
 	case "${dpkgArch##*-}" in \
-		amd64 | i386 | x32) extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-page=12" ;; \
-		*) extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-page=16" ;; \
+	amd64 | i386 | x32) extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-page=12" ;; \
+	*) extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-page=16" ;; \
 	esac; \
 	extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-hugepage=21"; \
 	grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
