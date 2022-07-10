@@ -6,10 +6,16 @@ if [ -f $CONFIG ]; then
 	rm $CONFIG
 fi;
 
+COUNT=0;
 $( nc -zv ${WORDPRESS_DB_HOST} 3306 );
 until [ $? -eq 0 ]
 do
-	sleep 1;
+	sleep 10;
+	if [ $COUNT -eq 6 ]
+	then
+		exit 1;
+	fi
+	COUNT=$((COUNT+1))
 	$( nc -zv ${WORDPRESS_DB_HOST} 3306 );
 done;
 
