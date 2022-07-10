@@ -1,11 +1,20 @@
-DOCKER_COMPOSE				= docker-compose
+DOCKER_COMPOSE				= sudo docker-compose
 DOCKER_COMPOSE_FILE		= srcs/docker-compose.yml
 DOCKER_COMPOSE_FLAGS	= -f $(DOCKER_COMPOSE_FILE) -p inception
-SRCS_DIR = srcs
-VPATH = srcs
+
+DB_VOLUME_NAME	= data
+DB_VOLUME_DIR		= /home/mypark/$(DB_VOLUME_NAME)
+WP_TAR 					= wordpress.tar.gz
+WP_VOLUME_NAME	= wordpress
+WP_VOLUME_DIR		= $(shell pwd)/$(WP_VOLUME_NAME)
+
+RM = sudo rm -rf
+
+SRCS_DIR	= srcs
+VPATH			= srcs
 
 
-.PHONY: help dependencies up start stop restart status ps clean build build-up
+.PHONY: help dependencies up start stop restart status ps clean build build-up volume
 
 help:
 	@echo usage: make [target]
@@ -50,30 +59,41 @@ config: ## Show docker-compose config
 	@$(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FLAGS) config
 
 clean: down
-	rm -rf	srcs/mariadb/data/*
-	rm -f		srcs/wordpress/wp-config.php
-
-fclean: clean
 	@sh 		srcs/tools/reset_server_ip.sh
-	rm -f ~/data
-	rm -f wordpress.tar.gz
-	rm -rf $(SRCS_DIR)/wordpress
+	@$(RM)		$(DB_VOLUME_DIR)
+	@$(RM)		$(WP_VOLUME_DIR)
+	@$(RM) 		$(WP_TAR)
+	@sudo docker volume rm $(DB_VOLUME_NAME) > /dev/null
+	@sudo docker volume rm $(WP_VOLUME_NAME) > /dev/null
 
-dependencies: $(SRCS_DIR)/wordpress/ ~/data
+dependencies: volume
 ifeq ($(shell uname -s), Linux)
 	@sh srcs/tools/set_server_ip.sh
 endif
 	@echo "Checking dependencies is done"
 
-~/data:
-	ln -s $(abspath $(SRCS_DIR))/mariadb/data/ /home/mypark/data
+volume: $(DB_VOLUME_DIR) $(WP_VOLUME_DIR)/adminer.php $(WP_TAR) 
+	@sudo docker volume create --name $(DB_VOLUME_NAME) -d local --opt type=none --opt device=$(DB_VOLUME_DIR) --opt o=bind > /dev/null
+	@sudo docker volume create --name $(WP_VOLUME_NAME) -d local --opt type=none --opt device=$(WP_VOLUME_DIR) --opt o=bind > /dev/null
+	@sudo docker volume ls | head -1 && sudo docker volume ls | grep $(DB_VOLUME_NAME) && sudo docker volume ls | grep $(WP_VOLUME_NAME)
+	@make -t $^
 
-$(SRCS_DIR)/wordpress/: wordpress.tar.gz
-	@echo "Extracting wordpress..."
-	@tar -xf $< -C $(SRCS_DIR)
+$(WP_VOLUME_DIR)/adminer.php: $(WP_VOLUME_DIR)
 	@echo "Downloading adminer..."
-	@curl -L -o $@/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-en.php
+	@curl -L -o $(WP_VOLUME_DIR)/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-en.php
 
-wordpress.tar.gz:
+$(WP_TAR): $(WP_VOLUME_DIR)
 	@echo "Downloading wordpress..."
 	@curl -o $@	https://wordpress.org/wordpress-6.0.tar.gz
+	@echo "Extracting wordpress..."
+	@tar -xf $@ -C $(WP_VOLUME_DIR) --strip-component=1
+
+
+$(WP_VOLUME_DIR):
+	@echo "Making wordpress volume directory..."
+	@mkdir -p $@
+
+$(DB_VOLUME_DIR):
+	@echo "Making database volume directory..."
+	@mkdir -p $@
+

@@ -10,7 +10,7 @@ services:
     env_file:
       - mariadb/.mariadb.env
     volumes:
-      - ./mariadb/data:/data
+      - data:/data
     networks:
       - net
 
@@ -27,7 +27,7 @@ services:
     ports:
       - 443:443
     volumes:
-      - ./wordpress:/var/www/html
+      - wordpress:/var/www/html
       - ./tetris:/var/www/html/tetris
     networks:
       - net
@@ -44,7 +44,7 @@ services:
     env_file:
       - php-fpm/.php-fpm.env
     volumes:
-      - ./wordpress:/var/www/html
+      - wordpress:/var/www/html
     networks:
       - net
 
@@ -65,7 +65,7 @@ services:
       context: ./mkdocs
       dockerfile: mkdocs.dockerfile
     volumes:
-      - ./wordpress/site:/resume/site
+      - wordpress:/wordpress
     networks:
       - net
 
@@ -80,10 +80,16 @@ services:
     env_file:
       - ftp/.ftp.env
     volumes:
-      - ./wordpress:/wordpress
+      - wordpress:/wordpress
     networks:
       - net
 
 networks:
   net:
     driver: bridge
+
+volumes:
+  wordpress:
+    external: true
+  data:
+    external: true
