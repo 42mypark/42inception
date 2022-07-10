@@ -1,4 +1,5 @@
 #!/bin/sh
+mv /materials/vsftpd.conf /etc/vsftpd/
 adduser -D ${FTP_USER_NAME};
 echo "${FTP_USER_NAME}:${FTP_USER_PASS}" | chpasswd;
 mkdir -p /wordpress/uploaded/;
