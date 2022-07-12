@@ -38,6 +38,8 @@ wp core install --path=/var/www/html \
 wp plugin --path=/var/www/html install wp-redis;
 wp plugin --path=/var/www/html activate wp-redis;
 
+wp user create --path=/var/www/html ${WORDPRESS_GENERAL_USER} ${WORDPRESS_GENERAL_EMAIL} --user_pass=${WORDPRESS_GENERAL_PASS}
+
 echo "define('WP_REDIS_HOST', '${WORDPRESS_REDIS_HOST}' );" >> /var/www/html/wp-config.php
 echo "define('WP_REDIS_PORT', '${WORDPRESS_REDIS_PORT}' );" >> /var/www/html/wp-config.php
 
